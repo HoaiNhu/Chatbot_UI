@@ -1,0 +1,9 @@
+.page {
+  @apply flex flex-col;
+}
+
+@media (max-width: 640px) {
+  .page {
+    @apply p-2;
+  }
+}
