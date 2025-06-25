@@ -112,7 +112,7 @@ function ChatbotComponent() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Nhắn tin nè..."
+          placeholder="Soạn tin..."
           className={styles.input}
         />
         <button onClick={() => handleSend()} className={styles.sendButton}>

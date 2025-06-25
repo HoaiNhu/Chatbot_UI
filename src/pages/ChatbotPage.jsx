@@ -8,7 +8,7 @@ function ChatbotPage() {
       className={`min-h-screen bg-gray-100 flex items-center justify-center ${styles.page}`}
     >
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
-        <div className="bg-blue-600 text-white p-4 flex items-center">
+        <div className="bg-green-600 text-white p-4 flex items-center">
           <img
             src={avatar}
             alt="Bot Avatar"

@@ -27,7 +27,7 @@
 }
 
 .userText {
-  @apply bg-blue-500 text-white rounded-br-none;
+  @apply bg-green-500 text-white rounded-br-none;
 }
 
 .botText {
@@ -55,11 +55,11 @@
 }
 
 .input {
-  @apply flex-1 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  @apply flex-1 p-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-300;
 }
 
 .sendButton {
-  @apply ml-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700;
+  @apply ml-2 px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700;
 }
 
 @media (max-width: 640px) {
