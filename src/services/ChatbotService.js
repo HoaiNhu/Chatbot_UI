@@ -1,6 +1,8 @@
 const API_BASE_URL = "http://localhost:3001/api/chatbot";
 
 export const sendMessage = async (message, sessionId) => {
+      console.log("Sending message to API:", { message, sessionId });
+
   try {
     const response = await fetch(`${API_BASE_URL}/message`, {
       method: "POST",
@@ -8,8 +10,10 @@ export const sendMessage = async (message, sessionId) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ message, sessionId }),
-    });
-
+      
+    }
+  );
+  
     if (!response.ok) {
       throw new Error("Failed to send message");
     }
