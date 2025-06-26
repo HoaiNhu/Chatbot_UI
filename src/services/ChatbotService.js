@@ -1,7 +1,8 @@
-const API_BASE_URL = "http://localhost:3001/api/chatbot";
+// const API_BASE_URL = "http://localhost:3001/api/chatbot";
+const API_BASE_URL = "https://chatbot-be-715r.onrender.com/";
 
 export const sendMessage = async (message, sessionId) => {
-      console.log("Sending message to API:", { message, sessionId });
+  console.log("Sending message to API:", { message, sessionId });
 
   try {
     const response = await fetch(`${API_BASE_URL}/message`, {
@@ -10,10 +11,8 @@ export const sendMessage = async (message, sessionId) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ message, sessionId }),
-      
-    }
-  );
-  
+    });
+
     if (!response.ok) {
       throw new Error("Failed to send message");
     }
