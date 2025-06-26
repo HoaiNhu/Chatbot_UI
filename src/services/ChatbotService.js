@@ -27,7 +27,7 @@ export const sendMessage = async (message, sessionId) => {
 
 export const createSession = async (userId = null, platform = "web") => {
   try {
-    const response = await fetch(`${API_BASE_URL}session`, {
+    const response = await fetch(`${API_BASE_URL}/session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
