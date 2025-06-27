@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./ChatbotComponent.module.css";
 import { createSession, sendMessage } from "../../services/ChatbotService";
-import avatar from "../../assets/image/LogoAvocado.png"
+import avatar from "../../assets/image/LogoAvocado.png";
+import { io } from "socket.io-client";
+
+const SOCKET_URL = "https://chatbot-be-715r.onrender.com"; // URL backend NodeJS
 
 function ChatbotComponent() {
   const [messages, setMessages] = useState([
@@ -23,43 +26,57 @@ function ChatbotComponent() {
     scrollToBottom();
   }, [messages, isTyping]);
 
- const handleSend = async (messageText = input) => {
-  if (!messageText.trim()) return;
+  useEffect(() => {
+    const socket = io(SOCKET_URL);
 
-  const userMessage = { text: messageText, sender: "user" };
-  setMessages((prev) => [...prev, userMessage]);
-  setInput("");
-  setIsTyping(true);
+    socket.on("connect", () => {
+      console.log("Connected to socket server");
+    });
 
-  try {
-    let currentSessionId = sessionId;
+    socket.on("new_message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
 
-    // 👉 Tạo session nếu chưa có
-    if (!currentSessionId) {
-      currentSessionId = await createSession();
-      setSessionId(currentSessionId);
-    }
-
-    const response = await sendMessage(messageText, currentSessionId);
-    const botMessage = { text: response.text, sender: "bot" };
-    setMessages((prev) => [...prev, botMessage]);
-
-    // Nếu backend trả session mới thì cập nhật
-    if (response.sessionId) {
-      setSessionId(response.sessionId);
-    }
-
-  } catch (error) {
-    const errorMessage = {
-      text: "Oops, có lỗi xảy ra! Thử lại nha.",
-      sender: "bot",
+    return () => {
+      socket.disconnect();
     };
-    setMessages((prev) => [...prev, errorMessage]);
-  } finally {
-    setIsTyping(false);
-  }
-};
+  }, []);
 
+  const handleSend = async (messageText = input) => {
+    if (!messageText.trim()) return;
+
+    const userMessage = { text: messageText, sender: "user" };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      let currentSessionId = sessionId;
+
+      // 👉 Tạo session nếu chưa có
+      if (!currentSessionId) {
+        currentSessionId = await createSession();
+        setSessionId(currentSessionId);
+      }
+
+      const response = await sendMessage(messageText, currentSessionId);
+      const botMessage = { text: response.text, sender: "bot" };
+      setMessages((prev) => [...prev, botMessage]);
+
+      // Nếu backend trả session mới thì cập nhật
+      if (response.sessionId) {
+        setSessionId(response.sessionId);
+      }
+    } catch (error) {
+      const errorMessage = {
+        text: "Oops, có lỗi xảy ra! Thử lại nha.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   const handleQuickReply = (payload) => {
     handleSend(payload);
@@ -82,11 +99,7 @@ function ChatbotComponent() {
             }`}
           >
             {msg.sender === "bot" && (
-              <img
-                src={avatar}
-                alt="Bot Avatar"
-                className={styles.botAvatar}
-              />
+              <img src={avatar} alt="Bot Avatar" className={styles.botAvatar} />
             )}
             <div
               className={`${styles.messageText} ${
