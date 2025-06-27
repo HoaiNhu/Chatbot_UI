@@ -60,8 +60,21 @@ function ChatbotComponent() {
       }
 
       const response = await sendMessage(messageText, currentSessionId);
-      const botMessage = { text: response.text, sender: "bot" };
-      setMessages((prev) => [...prev, botMessage]);
+
+      // Kiểm tra xem bot có trả lời không
+      if (response.noReply) {
+        // Bot không trả lời, hiển thị thông báo chờ staff
+        const waitingMessage = {
+          text: "Tin nhắn của bạn đã được chuyển cho nhân viên hỗ trợ. Họ sẽ phản hồi sớm nhất có thể.",
+          sender: "bot",
+          isWaiting: true,
+        };
+        setMessages((prev) => [...prev, waitingMessage]);
+      } else if (response.text) {
+        // Bot có trả lời
+        const botMessage = { text: response.text, sender: "bot" };
+        setMessages((prev) => [...prev, botMessage]);
+      }
 
       // Nếu backend trả session mới thì cập nhật
       if (response.sessionId) {
@@ -95,15 +108,23 @@ function ChatbotComponent() {
           <div
             key={index}
             className={`${styles.message} ${
-              msg.sender === "user" ? styles.userMessage : styles.botMessage
+              msg.sender === "user"
+                ? styles.userMessage
+                : msg.isWaiting
+                ? styles.botMessage + " " + styles.waiting
+                : styles.botMessage
             }`}
           >
-            {msg.sender === "bot" && (
+            {msg.sender === "bot" && !msg.isWaiting && (
               <img src={avatar} alt="Bot Avatar" className={styles.botAvatar} />
             )}
             <div
               className={`${styles.messageText} ${
-                msg.sender === "user" ? styles.userText : styles.botText
+                msg.sender === "user"
+                  ? styles.userText
+                  : msg.isWaiting
+                  ? styles.waitingText
+                  : styles.botText
               }`}
             >
               {msg.text}
